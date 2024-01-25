@@ -1,0 +1,26 @@
+{
+  "report_filename": "./report.pdf",
+  "csv_separator": ";",
+  "generalization" : {
+    "fields": {
+      "race": "str",
+      "age": "int"
+    }
+  },
+  "data": {
+    "hospital_data": {
+      "dir": "./data/hospital_data.csv",
+      "active": true,
+      "column_names": ["sex", "race", "age", "disease"],
+      "qi_group": ["sex", "race", "age"],
+      "sa_group": "disease"
+    },
+    "citizens_data": {
+      "dir": "./data/citizens_list.csv",
+      "active": false,
+      "column_names": ["name", "sex", "race", "age"],
+      "qi_group": ["sex", "race", "age"],
+      "sa_group": "name"
+    }
+  }
+}
