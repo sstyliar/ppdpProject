@@ -1,0 +1,5 @@
+This project was developed using the Python programming language. The class Ppdp serves as the entry point of the project and requires a configuration object to be injected into it to populate the appropriate data. After loading data from their respective CSV files, the script transforms them into NumPy dataframes.
+It then creates a taxonomy tree with two levels of generalization for each field requiring generalization, implementing different generalization logic depending on the datatype of each field.
+Subsequently, the script utilizes the taxonomy tree to perform the generalization logic one level at a time, starting from the root of each generalization branch, which is represented by the 'any' value.
+It calculates various generalization metrics, such as k-Anonymity, l-Diversity, Entropy l-Diversity, and Information Loss. Additionally, the script evaluates the likelihood of identifying individuals with known field values as having a specific disease and assesses the certainty of diagnosing someone's disease by cross-referencing both lists.
+Finally, the script generates a PDF report that includes all computed data.

@@ -18,7 +18,10 @@ class Ppdp:
         self.hasReport = "report_filename" in self.config and self.config["report_filename"] is not None
         self.reportData = self.getReportData()
         if self.hasReport:
-            self.report = Report(self.reportData, self.config)
+            with open('additionalNotes.txt') as f:
+                additionalNotes = f.readlines()
+            self.report = Report(self.reportData, self.config["report_filename"], additionalNotes)
+            self.report.saveReport()
 
     def populateData(self):
         # Populate the data prop and create the taxonomy tree
@@ -41,13 +44,8 @@ class Ppdp:
         return ret
 
     def getReportData(self):
-        reportData = {}
-        # Find the possibilities
-        if self.hasReport:
-            reportData["possibilities"] = possibility_utils.getPossibilitiesResults(self.data)
-
         # Run the generalization logic
-        reportData["anonymity"] = {}
+        reportData = {"anonymity": {}}
         for tableName in self.data:
             if self.config["data"][tableName]["active"]:
                 reportData["anonymity"][tableName] = {
@@ -67,6 +65,11 @@ class Ppdp:
                         iLoss = information_loss_utils.getILoss(copy.deepcopy(self.data[tableName]), generalizedData, self.config)
                         levelReport["i_loss"] = round(float(iLoss), 2)
                     reportData["anonymity"][tableName]["generalization"][level] = levelReport
+
+        # Find the possibilities
+        if self.hasReport:
+            reportData["possibilities"] = possibility_utils.getPossibilitiesResults(self.data)
+
         return reportData
 
 

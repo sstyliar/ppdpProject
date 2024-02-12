@@ -9,16 +9,14 @@ from bigtree import hyield_tree
 
 
 class Report:
-    def __init__(self, reportData, config, additionalNotes=None):
+    def __init__(self, reportData, reportFilename, additionalNotes=None):
         self.reportData = reportData
-        self.config = config
         self.additionalNotes = additionalNotes
-        self.doc = SimpleDocTemplate(config["report_filename"], pagesize=A4, rightMargin=50, leftMargin=50, topMargin=25, bottomMargin=25)
+        self.doc = SimpleDocTemplate(reportFilename, pagesize=A4, rightMargin=50, leftMargin=50, topMargin=25, bottomMargin=25)
         self.report = []
         self.styles = getSampleStyleSheet()
         self.buildStyles()
         self.buildReport()
-        self.saveReport()
 
     def buildStyles(self):
         pdfmetrics.registerFont(TTFont('Inconsolata-Medium', "./fonts/Inconsolata-Medium.ttf"))
@@ -76,9 +74,7 @@ class Report:
             self.report.append(Spacer(1, 10))
 
             # Generalization
-            self.report.append(Paragraph(
-                'Anonymity values after the generalization starting from "any" value in the first level and then on with grouping',
-                self.styles["sub_header"]))
+            self.report.append(Paragraph('Anonymity values after the generalization starting from "any"', self.styles["header"]))
             generalizationLevels = data["generalization"]
             props = []
             for level in generalizationLevels:
@@ -95,19 +91,25 @@ class Report:
             self.report.append(Spacer(1, 10))
 
             # Taxonomy Tree
+            self.report.append(Spacer(1, 80))
             self.report.append(Paragraph(f"Taxonomy tree for table: {tableName}", self.styles["header"]))
             tTree = data["taxonomy_tree"].getTree()
             result = hyield_tree(tTree, style="rounded")
             for line in result:
                 self.report.append(Paragraph(line.replace(" ", "&nbsp;"), self.styles["tree_font"]))
 
-    def addCustomNotes(self):
-        self.report.append(Paragraph("Additional Notes", self.styles["header"]))
-        self.report.append(Paragraph("", self.styles["p"]))
+    def insertAdditionalNotes(self):
+        for note in self.additionalNotes:
+            self.report.append(Paragraph(note, self.styles["p"]))
+        self.report.append(Spacer(1, 20))
 
     def buildReport(self):
         self.report.append(Paragraph("Privacy Preserving Data Publishing", self.styles["main_title"]))
         self.report.append(Paragraph("Project Report", self.styles["main_sub_title"]))
+
+        # Additional notes if any
+        if self.additionalNotes is not None:
+            self.insertAdditionalNotes()
 
         # Possibilities
         self.buildPossibilitiesReport()
